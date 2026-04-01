@@ -72,8 +72,8 @@
 
         try {
             // Remplace par ton lien SharePoint direct
-            const sharepointUrl = 'https://assoamicial.sharepoint.com/:x:/g/IQDKRJtbYHzRQbaUhDu-ZLm8ATBRlKH9Is6F64SY86GAOTI?e=RNzaHs';
-            const response = await fetch(sharepointUrl);
+            const sharepointUrl = 'https://drive.google.com/uc?export=download&id=13s204l0763EufehKnxRLLNb_0mttET14';
+            const response = await fetch(googleDriveUrl);
             if (!response.ok) {
                 throw new Error("Erreur de chargement du fichier CSV.");
             }
