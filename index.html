@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recherche par Code Postal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        input, button {
+            padding: 10px;
+            margin: 5px 0;
+            width: 100%;
+        }
+        #resultat {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            min-height: 50px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Recherche d'Intervention</h1>
+    <input type="text" id="codePostal" placeholder="Entrez un code postal (ex: 75001)">
+    <button onclick="rechercher()">Rechercher</button>
+    <div id="resultat"></div>
+
+    <script>
+        // Charger le fichier CSV
+        async function chargerCSV() {
+            const response = await fetch('codes_postaux.csv');
+            const data = await response.text();
+            return data;
+        }
+
+        // Rechercher un code postal
+        async function rechercher() {
+            const code = document.getElementById("codePostal").value.trim();
+            const resultatDiv = document.getElementById("resultat");
+
+            if (!code) {
+                resultatDiv.innerHTML = "<p>Veuillez entrer un code postal.</p>";
+                return;
+            }
+
+            const csvData = await chargerCSV();
+            const lignes = csvData.split('\n');
+            const entetes = lignes[0].split(',');
+            let trouve = false;
+
+            for (let i = 1; i < lignes.length; i++) {
+                const valeurs = lignes[i].split(',');
+                if (valeurs[1] === code) {
+                    const agence = valeurs[3];
+                    const actif = valeurs[4];
+                    resultatDiv.innerHTML = `
+                        <p><strong>Code Postal :</strong> ${code}</p>
+                        <p><strong>Ville :</strong> ${valeurs[2]}</p>
+                        <p><strong>Agence :</strong> ${agence}</p>
+                        <p><strong>Intervention :</strong> ${actif}</p>
+                    `;
+                    trouve = true;
+                    break;
+                }
+            }
+
+            if (!trouve) {
+                resultatDiv.innerHTML = "<p>Aucune intervention trouvée pour ce code postal.</p>";
+            }
+        }
+    </script>
+</body>
+</html>
