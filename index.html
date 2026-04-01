@@ -75,5 +75,17 @@
             }
         }
     </script>
+    <script>
+    async function testerChargementCSV() {
+        try {
+            const response = await fetch('codes_postaux_corriges_5_chiffres.csv');
+            const data = await response.text();
+            console.log("Fichier chargé avec succès :", data.split('\n').slice(0, 5));
+        } catch (error) {
+            console.error("Erreur de chargement :", error);
+        }
+    }
+    testerChargementCSV();
+</script>
 </body>
 </html>
