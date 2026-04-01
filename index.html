@@ -71,9 +71,10 @@ async function rechercher() {
     }
 
     try {
-        // Remplace par l'URL de ton Google Sheet publié en CSV
+        // Utilise le proxy CORS public
+        const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
         const googleSheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRZnISzv0ErwUvt0KTIOxSPt1_OEjOSwX_Jf_DLck9hZXdoebuE6YGDIarcp7zMnZYnvpEtFyzmdDwV/pub?output=csv';
-        const response = await fetch(googleSheetUrl);
+        const response = await fetch(proxyUrl + googleSheetUrl);
         if (!response.ok) {
             throw new Error("Erreur de chargement du fichier CSV.");
         }
