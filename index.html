@@ -61,7 +61,7 @@
     <div id="resultat"></div>
 
     <script>
-  async function rechercher() {
+async function rechercher() {
     const code = document.getElementById("codePostal").value.trim();
     const resultatDiv = document.getElementById("resultat");
 
@@ -71,8 +71,9 @@
     }
 
     try {
-        // Remplace par ton lien de téléchargement direct Google Drive
-        const response = await fetch('https://drive.google.com/uc?export=download&id=13s204l0763EufehKnxRLLNb_0mttET14');
+        // Remplace par l'URL de ton Google Sheet publié en CSV
+        const googleSheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRZnISzv0ErwUvt0KTIOxSPt1_OEjOSwX_Jf_DLck9hZXdoebuE6YGDIarcp7zMnZYnvpEtFyzmdDwV/pub?output=csv';
+        const response = await fetch(googleSheetUrl);
         if (!response.ok) {
             throw new Error("Erreur de chargement du fichier CSV.");
         }
