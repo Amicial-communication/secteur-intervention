@@ -61,48 +61,50 @@
     <div id="resultat"></div>
 
     <script>
-        async function rechercher() {
-            const code = document.getElementById("codePostal").value.trim();
-            const resultatDiv = document.getElementById("resultat");
+    async function rechercher() {
+        const code = document.getElementById("codePostal").value.trim();
+        const resultatDiv = document.getElementById("resultat");
 
-            if (!code) {
-                resultatDiv.innerHTML = "<p>Veuillez entrer un code postal.</p>";
-                return;
-            }
-
-            try {
-                const response = await fetch('codes_postaux.csv');
-                if (!response.ok) {
-                    throw new Error("Erreur de chargement du fichier CSV.");
-                }
-                const data = await response.text();
-                const lignes = data.split('\n');
-
-                let trouve = false;
-                for (let i = 1; i < lignes.length; i++) {
-                    const valeurs = lignes[i].split(',');
-                    if (valeurs[1] && valeurs[1].trim() === code) {
-                        const agence = valeurs[3];
-                        const actif = valeurs[4];
-                        resultatDiv.innerHTML = `
-                            <p><strong>Code Postal :</strong> ${code}</p>
-                            <p><strong>Ville :</strong> ${valeurs[2]}</p>
-                            <p><strong>Agence :</strong> ${agence}</p>
-                            <p><strong>Intervention :</strong> ${actif}</p>
-                        `;
-                        trouve = true;
-                        break;
-                    }
-                }
-
-                if (!trouve) {
-                    resultatDiv.innerHTML = "<p>Aucune intervention trouvée pour ce code postal.</p>";
-                }
-            } catch (error) {
-                console.error("Erreur :", error);
-                resultatDiv.innerHTML = "<p>Une erreur est survenue. Veuillez réessayer.</p>";
-            }
+        if (!code) {
+            resultatDiv.innerHTML = "<p>Veuillez entrer un code postal.</p>";
+            return;
         }
-    </script>
+
+        try {
+            // Remplace par ton lien SharePoint direct
+            const sharepointUrl = 'https://assoamicial.sharepoint.com/:x:/g/IQDKRJtbYHzRQbaUhDu-ZLm8ATBRlKH9Is6F64SY86GAOTI?e=RNzaHs';
+            const response = await fetch(sharepointUrl);
+            if (!response.ok) {
+                throw new Error("Erreur de chargement du fichier CSV.");
+            }
+            const data = await response.text();
+            const lignes = data.split('\n');
+
+            let trouve = false;
+            for (let i = 1; i < lignes.length; i++) {
+                const valeurs = lignes[i].split(',');
+                if (valeurs[1] && valeurs[1].trim() === code) {
+                    const agence = valeurs[3];
+                    const actif = valeurs[4];
+                    resultatDiv.innerHTML = `
+                        <p><strong>Code Postal :</strong> ${code}</p>
+                        <p><strong>Ville :</strong> ${valeurs[2]}</p>
+                        <p><strong>Agence :</strong> ${agence}</p>
+                        <p><strong>Intervention :</strong> ${actif}</p>
+                    `;
+                    trouve = true;
+                    break;
+                }
+            }
+
+            if (!trouve) {
+                resultatDiv.innerHTML = "<p>Aucune intervention trouvée pour ce code postal.</p>";
+            }
+        } catch (error) {
+            console.error("Erreur :", error);
+            resultatDiv.innerHTML = "<p>Une erreur est survenue. Veuillez réessayer.</p>";
+        }
+    }
+</script>
 </body>
 </html>
