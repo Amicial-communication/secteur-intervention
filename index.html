@@ -3,30 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recherche par Code Postal</title>
+    <title>Recherche par Code Postal - Amicial</title>
+    <link rel="preload" href="logo_f193670e633a220d12e109007ca43583.svg" as="image">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            max-width: 600px;
+            font-family: 'Open Sans', Arial, sans-serif;
+            max-width: 800px;
             margin: 0 auto;
             padding: 20px;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h1 {
+            color: #0066cc;
+            font-size: 24px;
+            margin-bottom: 20px;
         }
         input, button {
-            padding: 10px;
-            margin: 5px 0;
+            padding: 12px;
+            margin: 10px 0;
             width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #0066cc;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0052a3;
         }
         #resultat {
             margin-top: 20px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            min-height: 50px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: white;
+            min-height: 60px;
         }
     </style>
 </head>
 <body>
-    <h1>Recherche d'Intervention</h1>
+    <div class="header">
+        <img src="logo_f193670e633a220d12e109007ca43583.svg" alt="Logo Amicial" style="max-width: 200px; margin-bottom: 20px;">
+        <h1>Recherche d'Intervention</h1>
+    </div>
     <input type="text" id="codePostal" placeholder="Entrez un code postal (ex: 01400)">
     <button onclick="rechercher()">Rechercher</button>
     <div id="resultat"></div>
@@ -75,17 +104,5 @@
             }
         }
     </script>
-    <script>
-    async function testerChargementCSV() {
-        try {
-            const response = await fetch('codes_postaux_corriges_5_chiffres.csv');
-            const data = await response.text();
-            console.log("Fichier chargé avec succès :", data.split('\n').slice(0, 5));
-        } catch (error) {
-            console.error("Erreur de chargement :", error);
-        }
-    }
-    testerChargementCSV();
-</script>
 </body>
 </html>
