@@ -4,10 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recherche par Code Postal - Amicial</title>
-    <link rel="preload" href="logo_f193670e633a220d12e109007ca43583.svg" as="image">
     <style>
         body {
-            font-family: 'Open Sans', Arial, sans-serif;
+            font-family: Arial, sans-serif;
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
@@ -53,7 +52,6 @@
 </head>
 <body>
     <div class="header">
-        <img src="logo_f193670e633a220d12e109007ca43583.svg" alt="Logo Amicial" style="max-width: 200px; margin-bottom: 20px;">
         <h1>Recherche d'Intervention</h1>
     </div>
     <input type="text" id="codePostal" placeholder="Entrez un code postal (ex: 01400)">
@@ -61,51 +59,48 @@
     <div id="resultat"></div>
 
     <script>
-      async function rechercher() {
-    const code = document.getElementById("codePostal").value.trim();
-    const resultatDiv = document.getElementById("resultat");
+        async function rechercher() {
+            const code = document.getElementById("codePostal").value.trim();
+            const resultatDiv = document.getElementById("resultat");
 
-    if (!code) {
-        resultatDiv.innerHTML = "<p>Veuillez entrer un code postal.</p>";
-        return;
-    }
+            if (!code) {
+                resultatDiv.innerHTML = "<p>Veuillez entrer un code postal.</p>";
+                return;
+            }
 
-    try {
-        // Utilise le proxy CORS public
-        const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-        const googleSheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRZnISzv0ErwUvt0KTIOxSPt1_OEjOSwX_Jf_DLck9hZXdoebuE6YGDIarcp7zMnZYnvpEtFyzmdDwV/pub?output=csv';
-        const response = await fetch(proxyUrl + googleSheetUrl);
-        if (!response.ok) {
-            throw new Error("Erreur de chargement du fichier CSV.");
-        }
-        const data = await response.text();
-        const lignes = data.split('\n');
+            try {
+                const response = await fetch('codes_postaux.csv');
+                if (!response.ok) {
+                    throw new Error("Erreur de chargement du fichier CSV.");
+                }
+                const data = await response.text();
+                const lignes = data.split('\n');
 
-        let trouve = false;
-        for (let i = 1; i < lignes.length; i++) {
-            const valeurs = lignes[i].split(',');
-            if (valeurs[1] && valeurs[1].trim() === code) {
-                const agence = valeurs[3];
-                const actif = valeurs[4];
-                resultatDiv.innerHTML = `
-                    <p><strong>Code Postal :</strong> ${code}</p>
-                    <p><strong>Ville :</strong> ${valeurs[2]}</p>
-                    <p><strong>Agence :</strong> ${agence}</p>
-                    <p><strong>Intervention :</strong> ${actif}</p>
-                `;
-                trouve = true;
-                break;
+                let trouve = false;
+                for (let i = 1; i < lignes.length; i++) {
+                    const valeurs = lignes[i].split(',');
+                    if (valeurs[1] && valeurs[1].trim() === code) {
+                        const agence = valeurs[3];
+                        const actif = valeurs[4];
+                        resultatDiv.innerHTML = `
+                            <p><strong>Code Postal :</strong> ${code}</p>
+                            <p><strong>Ville :</strong> ${valeurs[2]}</p>
+                            <p><strong>Agence :</strong> ${agence}</p>
+                            <p><strong>Intervention :</strong> ${actif}</p>
+                        `;
+                        trouve = true;
+                        break;
+                    }
+                }
+
+                if (!trouve) {
+                    resultatDiv.innerHTML = "<p>Aucune intervention trouvée pour ce code postal.</p>";
+                }
+            } catch (error) {
+                console.error("Erreur :", error);
+                resultatDiv.innerHTML = "<p>Une erreur est survenue. Veuillez réessayer.</p>";
             }
         }
-
-        if (!trouve) {
-            resultatDiv.innerHTML = "<p>Aucune intervention trouvée pour ce code postal.</p>";
-        }
-    } catch (error) {
-        console.error("Erreur :", error);
-        resultatDiv.innerHTML = "<p>Une erreur est survenue. Veuillez réessayer.</p>";
-    }
-}
     </script>
 </body>
 </html>
