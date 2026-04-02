@@ -1,106 +1,420 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recherche par Code Postal - Amicial</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f8f9fa;
-            color: #333;
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        h1 {
-            color: #0066cc;
-            font-size: 24px;
-            margin-bottom: 20px;
-        }
-        input, button {
-            padding: 12px;
-            margin: 10px 0;
-            width: 100%;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 16px;
-        }
-        button {
-            background-color: #0066cc;
-            color: white;
-            border: none;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        button:hover {
-            background-color: #0052a3;
-        }
-        #resultat {
-            margin-top: 20px;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            background-color: white;
-            min-height: 60px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vérification d'intervention — Amicial</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #F5F4F0;
+      --surface:   #FFFFFF;
+      --border:    #E2E0D8;
+      --text:      #1A1917;
+      --muted:     #706E68;
+      --accent:    #1D4ED8;
+      --accent-lt: #EFF3FF;
+      --success:   #059669;
+      --success-lt:#ECFDF5;
+      --warn:      #D97706;
+      --warn-lt:   #FFFBEB;
+      --danger:    #DC2626;
+      --danger-lt: #FEF2F2;
+      --radius:    10px;
+      --shadow:    0 1px 3px rgba(0,0,0,.06), 0 4px 16px rgba(0,0,0,.06);
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 48px 20px 80px;
+    }
+
+    /* ── Header ── */
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+      animation: fadeUp .5s ease both;
+    }
+    .logo-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      padding: 5px 12px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+    }
+    .logo-badge .dot {
+      width: 6px; height: 6px;
+      background: #93C5FD;
+      border-radius: 50%;
+    }
+    h1 {
+      font-size: clamp(22px, 4vw, 32px);
+      font-weight: 600;
+      letter-spacing: -.02em;
+      color: var(--text);
+      line-height: 1.2;
+    }
+    .subtitle {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 15px;
+      font-weight: 300;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      padding: 32px;
+      width: 100%;
+      max-width: 520px;
+      animation: fadeUp .5s .1s ease both;
+    }
+
+    /* ── Search field ── */
+    .search-wrap {
+      position: relative;
+      margin-bottom: 16px;
+    }
+    .search-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      pointer-events: none;
+    }
+    #codePostal {
+      width: 100%;
+      padding: 14px 16px 14px 46px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      font-family: 'DM Mono', monospace;
+      font-size: 17px;
+      font-weight: 500;
+      color: var(--text);
+      background: var(--bg);
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+      letter-spacing: .06em;
+    }
+    #codePostal:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(29,78,216,.12);
+      background: #fff;
+    }
+    #codePostal::placeholder { color: #B0AEA8; letter-spacing: 0; font-weight: 400; font-family: 'DM Sans', sans-serif; }
+
+    /* ── Button ── */
+    button {
+      width: 100%;
+      padding: 13px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background .15s, transform .1s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    button:hover { background: #1e40af; }
+    button:active { transform: scale(.98); }
+    button:disabled { background: #9CA3AF; cursor: not-allowed; transform: none; }
+
+    /* ── Résultat ── */
+    #resultat { margin-top: 24px; }
+
+    .result-card {
+      border-radius: var(--radius);
+      padding: 20px;
+      border: 1px solid;
+      animation: fadeUp .3s ease both;
+    }
+
+    .result-card.oui {
+      background: var(--success-lt);
+      border-color: #A7F3D0;
+    }
+    .result-card.non {
+      background: var(--danger-lt);
+      border-color: #FECACA;
+    }
+    .result-card.unknown {
+      background: var(--warn-lt);
+      border-color: #FDE68A;
+    }
+
+    .result-status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .status-icon {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+      flex-shrink: 0;
+    }
+    .oui  .status-icon { background: #D1FAE5; }
+    .non  .status-icon { background: #FEE2E2; }
+    .unknown .status-icon { background: #FEF3C7; }
+
+    .status-label {
+      font-size: 15px;
+      font-weight: 600;
+    }
+    .oui  .status-label { color: var(--success); }
+    .non  .status-label { color: var(--danger); }
+    .unknown .status-label { color: var(--warn); }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .result-item {
+      background: rgba(255,255,255,.7);
+      border-radius: 8px;
+      padding: 10px 14px;
+    }
+    .result-item .label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 3px;
+    }
+    .result-item .value {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    /* Agence spans full width */
+    .result-item.full { grid-column: 1 / -1; }
+
+    /* ── Loading ── */
+    .loader {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 14px;
+      padding: 12px 0;
+    }
+    .spinner {
+      width: 18px; height: 18px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+    }
+
+    /* ── Error / empty ── */
+    .msg {
+      text-align: center;
+      padding: 20px 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .msg strong { display: block; color: var(--text); font-size: 15px; margin-bottom: 4px; }
+
+    /* ── Sync info ── */
+    .sync-info {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .sync-dot {
+      width: 7px; height: 7px;
+      background: var(--success);
+      border-radius: 50%;
+      animation: pulse 2s ease infinite;
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes pulse {
+      0%,100% { opacity: 1; }
+      50%      { opacity: .3; }
+    }
+  </style>
 </head>
 <body>
-    <div class="header">
-        <h1>Recherche d'Intervention</h1>
+
+  <div class="header">
+    <div class="logo-badge"><span class="dot"></span>Amicial</div>
+    <h1>Vérification d'intervention</h1>
+    <p class="subtitle">Renseignez un code postal pour connaître l'agence responsable</p>
+  </div>
+
+  <div class="card">
+    <div class="search-wrap">
+      <svg class="search-icon" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+      </svg>
+      <input
+        type="text"
+        id="codePostal"
+        placeholder="Ex : 75012"
+        maxlength="5"
+        inputmode="numeric"
+        autocomplete="off"
+        onkeydown="if(event.key==='Enter') rechercher()"
+      >
     </div>
-    <input type="text" id="codePostal" placeholder="Entrez un code postal (ex: 01400)">
-    <button onclick="rechercher()">Rechercher</button>
+    <button id="btn" onclick="rechercher()">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+      </svg>
+      Rechercher
+    </button>
+
     <div id="resultat"></div>
 
-    <script>
-        async function rechercher() {
-            const code = document.getElementById("codePostal").value.trim();
-            const resultatDiv = document.getElementById("resultat");
+    <div class="sync-info">
+      <span class="sync-dot"></span>
+      Données synchronisées en temps réel via Microsoft Lists
+    </div>
+  </div>
 
-            if (!code) {
-                resultatDiv.innerHTML = "<p>Veuillez entrer un code postal.</p>";
-                return;
-            }
+  <script>
+    // ─────────────────────────────────────────────────────────
+    // ⚙️  CONFIGURATION — remplacez cette URL par celle
+    //     générée par votre flux Power Automate
+    // ─────────────────────────────────────────────────────────
+    const POWER_AUTOMATE_URL = "https://defaultbf0e3444b0694eb7b7039407116bf7.0c.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/ffb831cb2e9c4ae0bafd0cb30f5eabb7/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=w_bm7kX76nxct5XxkmZzX4aahdbD-dv_JJ908hNfa_o";
+    // ─────────────────────────────────────────────────────────
 
-            try {
-                const response = await fetch('codes_postaux.csv');
-                if (!response.ok) {
-                    throw new Error("Erreur de chargement du fichier CSV.");
-                }
-                const data = await response.text();
-                const lignes = data.split('\n');
+    async function rechercher() {
+      const code = document.getElementById("codePostal").value.trim();
+      const el = document.getElementById("resultat");
+      const btn = document.getElementById("btn");
 
-                let trouve = false;
-                for (let i = 1; i < lignes.length; i++) {
-                    const valeurs = lignes[i].split(',');
-                    if (valeurs[1] && valeurs[1].trim() === code) {
-                        const agence = valeurs[3];
-                        const actif = valeurs[4];
-                        resultatDiv.innerHTML = `
-                            <p><strong>Code Postal :</strong> ${code}</p>
-                            <p><strong>Ville :</strong> ${valeurs[2]}</p>
-                            <p><strong>Agence :</strong> ${agence}</p>
-                            <p><strong>Intervention :</strong> ${actif}</p>
-                        `;
-                        trouve = true;
-                        break;
-                    }
-                }
+      if (!code || code.length < 4) {
+        el.innerHTML = `<div class="msg"><strong>Code postal invalide</strong>Veuillez saisir un code postal à 5 chiffres.</div>`;
+        return;
+      }
 
-                if (!trouve) {
-                    resultatDiv.innerHTML = "<p>Aucune intervention trouvée pour ce code postal.</p>";
-                }
-            } catch (error) {
-                console.error("Erreur :", error);
-                resultatDiv.innerHTML = "<p>Une erreur est survenue. Veuillez réessayer.</p>";
-            }
+      // État chargement
+      btn.disabled = true;
+      el.innerHTML = `<div class="loader"><div class="spinner"></div>Recherche en cours…</div>`;
+
+      try {
+        const response = await fetch(`${POWER_AUTOMATE_URL}&code=${encodeURIComponent(code)}`, {
+          method: "GET",
+          headers: { "Accept": "application/json" }
+        });
+
+        if (!response.ok) throw new Error("Erreur réseau");
+
+        const data = await response.json();
+
+        if (!data || data.length === 0) {
+          el.innerHTML = `
+            <div class="result-card unknown">
+              <div class="result-status">
+                <div class="status-icon">⚠️</div>
+                <span class="status-label">Code postal non référencé</span>
+              </div>
+              <p style="font-size:13px;color:#92400E;">
+                Aucun secteur trouvé pour <strong>${escHtml(code)}</strong>.<br>
+                Vérifiez le code ou contactez votre responsable d'agence.
+              </p>
+            </div>`;
+          return;
         }
-    </script>
+
+        const d = data[0];
+        const actif = (d.Actif || "").toLowerCase();
+        const intervient = actif === "oui" || actif === "true" || actif === "1";
+        const cls = intervient ? "oui" : "non";
+        const icon = intervient ? "✅" : "❌";
+        const label = intervient ? "Intervention possible" : "Pas d'intervention sur ce secteur";
+
+        el.innerHTML = `
+          <div class="result-card ${cls}">
+            <div class="result-status">
+              <div class="status-icon">${icon}</div>
+              <span class="status-label">${label}</span>
+            </div>
+            <div class="result-grid">
+              <div class="result-item">
+                <div class="label">Code postal</div>
+                <div class="value">${escHtml(d.CodePostal || code)}</div>
+              </div>
+              <div class="result-item">
+                <div class="label">Ville</div>
+                <div class="value">${escHtml(d.Ville || "—")}</div>
+              </div>
+              <div class="result-item full">
+                <div class="label">Agence responsable</div>
+                <div class="value">${escHtml(d.Agence || "—")}</div>
+              </div>
+              <div class="result-item">
+                <div class="label">Département</div>
+                <div class="value">${escHtml(d.Departement || "—")}</div>
+              </div>
+            </div>
+          </div>`;
+
+      } catch (err) {
+        el.innerHTML = `
+          <div class="msg">
+            <strong>Erreur de connexion</strong>
+            Impossible de joindre la base de données.<br>
+            Vérifiez votre connexion ou contactez le support.
+          </div>`;
+        console.error(err);
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function escHtml(s) {
+      return String(s)
+        .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+    }
+  </script>
 </body>
 </html>
